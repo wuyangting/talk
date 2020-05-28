@@ -1,7 +1,9 @@
 package com.example.talk2;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +32,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ArrayList<Fragment> fragments;
     private ArrayList<String> tabs;
     private ImageView mBarImgMain;
+    private ArrayList<Integer> images;
 
     @Override
     protected void initData() {
@@ -55,6 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTabRecommend.setSelectedTabIndicator(0);
         initFragment();
         initTabs();
+        initImages();
         setSupportActionBar(mTool);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDraw, mTool, R.string.open, R.string.close);
         mDraw.addDrawerListener(drawerToggle);
@@ -62,7 +66,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         MainPageAdapter adapter = new MainPageAdapter(getSupportFragmentManager(), fragments, tabs);
         mViewpageMain.setAdapter(adapter);
         mTabRecommend.setupWithViewPager(mViewpageMain);
+        for (int i = 0; i < tabs.size(); i++) {
+            TabLayout.Tab tab = mTabRecommend.getTabAt(i);
+            //设置自定义Tab布局
+            tab.setCustomView(getTabView(i));
+        }
+    }
 
+    private void initImages() {
+        images = new ArrayList<>();
+images.add(R.drawable.messageselect);
+images.add(R.drawable.peopleselect);
+images.add(R.drawable.dongtaiselect);
     }
 
     private void initTabs() {
@@ -71,6 +86,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         tabs.add("联系人");
         tabs.add("动态");
 
+    }
+    //根据索引获取对应的tab的自定义view
+    private View getTabView(int position) {
+        View inflate = LayoutInflater.from(this).inflate(R.layout.tab, null);
+        TextView tv = inflate.findViewById(R.id.tv);
+        ImageView iv = inflate.findViewById(R.id.iv);
+        tv.setText(tabs.get(position));
+        iv.setImageResource(images.get(position));
+        return inflate;
     }
 
     private void initFragment() {
